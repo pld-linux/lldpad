@@ -105,4 +105,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblldp_clif.so
 %{_includedir}/lldpad
 %{_pkgconfigdir}/liblldp_clif.pc
-%{_pkgconfigdir}/liblldp.pc
+%{_pkgconfigdir}/lldpad.pc
