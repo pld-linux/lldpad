@@ -1,0 +1,24 @@
+--- lldpad-1.0.1/Makefile.am~	2017-04-17 14:50:19.000000000 +0200
++++ lldpad-1.0.1/Makefile.am	2017-04-17 15:00:14.349897556 +0200
+@@ -123,9 +123,9 @@
+ 
+ ## special hooks to handle the init script
+ install-data-local: lldpad.service lldpad.socket
+-	$(MKDIR_P) $(DESTDIR)/usr/lib/systemd/system
+-	$(INSTALL_DATA) lldpad.service $(DESTDIR)/usr/lib/systemd/system/lldpad.service
+-	$(INSTALL_DATA) lldpad.socket $(DESTDIR)/usr/lib/systemd/system/lldpad.socket
++	$(MKDIR_P) $(DESTDIR)/lib/systemd/system
++	$(INSTALL_DATA) lldpad.service $(DESTDIR)/lib/systemd/system/lldpad.service
++	$(INSTALL_DATA) lldpad.socket $(DESTDIR)/lib/systemd/system/lldpad.socket
+ 
+ BASH_COMPLETION_DIR=/etc/bash_completion.d/
+ 
+@@ -135,7 +135,7 @@
+ 	$(INSTALL_DATA) ${srcdir}/contrib/bash_completion/* $(DESTDIR)/$(BASH_COMPLETION_DIR)
+ 
+ uninstall-local:
+-	rm -f '$(DESTDIR)/usr/lib/systemd/system/lldpad.*'
++	rm -f '$(DESTDIR)/lib/systemd/system/lldpad.*'
+ 	rm -f '$(includedir)/dcbd/clif_cmds.h'
+ 	rm -f '$(includedir)/dcbd'
+ 
