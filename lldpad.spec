@@ -98,7 +98,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/lldptool-evb.8*
 %{_mandir}/man8/lldptool-med.8*
 %{_mandir}/man8/lldptool-pfc.8*
-%{_mandir}/man8/ldptool-vdp.8*
+%{_mandir}/man8/lldptool-vdp.8*
 
 %files devel
 %defattr(644,root,root,755)
