@@ -1,4 +1,5 @@
 Summary:	Intel LLDP Agent
+Summary(pl.UTF-8):	Agent LLDP firmy Intel
 Name:		lldpad
 Version:	1.0.1
 Release:	2
@@ -29,14 +30,24 @@ This package contains the Linux user space daemon and configuration
 tool for Intel LLDP Agent with Enhanced Ethernet support for the Data
 Center.
 
+%description -l pl.UTF-8
+Ten pakiet zawiera demona przestrzeni użytkownika dla Linuksa oraz
+narzędzie konfiguracyjne agenta LLDP firmy Intel z obsługą Enhanced
+Ethernet dla DC.
+
 %package devel
 Summary:	Development files for %{name}
+Summary(pl.UTF-8):	Pliki programistyczne %{name}
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-The %{name}-devel package contains header files for developing
-applications that use %{name}.
+This package contains header files for developing applications that
+use %{name}.
+
+%description devel -l pl.UTF-8
+Ten pakiet zawiera pliki nagłówkowe to tworzenia aplikacji
+wykorzystujących %{name}.
 
 %prep
 %setup -q
