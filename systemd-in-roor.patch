@@ -1,24 +1,11 @@
---- lldpad-1.0.1/Makefile.am~	2017-04-17 14:50:19.000000000 +0200
-+++ lldpad-1.0.1/Makefile.am	2017-04-17 15:00:14.349897556 +0200
-@@ -123,9 +123,9 @@
+--- openlldp-1.1.1/Makefile.am.orig	2024-03-05 19:46:14.000000000 +0100
++++ openlldp-1.1.1/Makefile.am	2025-08-12 06:26:23.844817423 +0200
+@@ -138,7 +138,7 @@ install-data-hook:	installdirs-local
+ pkgconfigdir = ${libdir}/pkgconfig
+ pkgconfig_DATA = lldpad.pc liblldp_clif.pc
  
- ## special hooks to handle the init script
- install-data-local: lldpad.service lldpad.socket
--	$(MKDIR_P) $(DESTDIR)/usr/lib/systemd/system
--	$(INSTALL_DATA) lldpad.service $(DESTDIR)/usr/lib/systemd/system/lldpad.service
--	$(INSTALL_DATA) lldpad.socket $(DESTDIR)/usr/lib/systemd/system/lldpad.socket
-+	$(MKDIR_P) $(DESTDIR)/lib/systemd/system
-+	$(INSTALL_DATA) lldpad.service $(DESTDIR)/lib/systemd/system/lldpad.service
-+	$(INSTALL_DATA) lldpad.socket $(DESTDIR)/lib/systemd/system/lldpad.socket
+-systemdsystemunitdir = $(prefix)/lib/systemd/system
++systemdsystemunitdir = /lib/systemd/system
+ dist_systemdsystemunit_DATA = lldpad.service lldpad.socket
  
- BASH_COMPLETION_DIR=/etc/bash_completion.d/
- 
-@@ -135,7 +135,7 @@
- 	$(INSTALL_DATA) ${srcdir}/contrib/bash_completion/* $(DESTDIR)/$(BASH_COMPLETION_DIR)
- 
- uninstall-local:
--	rm -f '$(DESTDIR)/usr/lib/systemd/system/lldpad.*'
-+	rm -f '$(DESTDIR)/lib/systemd/system/lldpad.*'
- 	rm -f '$(includedir)/dcbd/clif_cmds.h'
- 	rm -f '$(includedir)/dcbd'
- 
+ bashcompletiondir = $(sysconfdir)/bash_completion.d

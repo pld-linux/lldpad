@@ -1,28 +1,29 @@
 Summary:	Intel LLDP Agent
 Summary(pl.UTF-8):	Agent LLDP firmy Intel
 Name:		lldpad
-Version:	1.0.1
-Release:	2
+Version:	1.1.1
+Release:	1
 License:	GPL v2
 Group:		Daemons
-# git://www.open-lldp.org/open-lldp.git
-Source0:	%{name}-%{version}.tar.xz
-# Source0-md5:	602088dcb826d0b7966eafe2c082fe46
+Source0:	https://github.com/intel/openlldp/archive/v%{version}/openlldp-%{version}.tar.gz
+# Source0-md5:	7d5ff2233cd8ee26c8124f4b741d6acb
 Patch0:		systemd-in-roor.patch
-URL:		http://open-lldp.org/
-BuildRequires:	autoconf
+URL:		https://github.com/intel/openlldp
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	flex >= 2.5.33
-BuildRequires:	kernel-headers >= 2.6.32
+BuildRequires:	linux-libc-headers >= 2.6.32
 BuildRequires:	libconfig-devel >= 1.3.2
-BuildRequires:	libnl-devel
-BuildRequires:	libtool
+BuildRequires:	libnl-devel >= 3.2
+BuildRequires:	libtool >= 2:2
+BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
-BuildRequires:	rpmbuild(macros) >= 1.647
-BuildRequires:	systemd
-Requires:	readline
+BuildRequires:	rpmbuild(macros) >= 1.673
+BuildRequires:	systemd-devel
 Requires(post,preun,postun):	systemd-units >= 38
-Requires:	systemd-units >= 0.38
+Requires:	iproute2-tc >= 2.6.29
+Requires:	systemd-units >= 38
+Requires:	uname(release) >= 2.6.29
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -36,29 +37,28 @@ narzędzie konfiguracyjne agenta LLDP firmy Intel z obsługą Enhanced
 Ethernet dla DC.
 
 %package devel
-Summary:	Development files for %{name}
-Summary(pl.UTF-8):	Pliki programistyczne %{name}
+Summary:	Development files for LLDP Agent and its communication library
+Summary(pl.UTF-8):	Pliki programistyczne agenta LLDP i jego biblioteki komunikacyjnej
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
 This package contains header files for developing applications that
-use %{name}.
+use LLDP Agent.
 
 %description devel -l pl.UTF-8
 Ten pakiet zawiera pliki nagłówkowe to tworzenia aplikacji
-wykorzystujących %{name}.
+wykorzystujących agenta LLDP.
 
 %prep
-%setup -q
+%setup -q -n openlldp-%{version}
 %patch -P0 -p1
 
 %build
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-export CFLAGS="%{rpmcflags} -Wno-error"
 %configure \
 	--disable-static
 
@@ -66,10 +66,11 @@ export CFLAGS="%{rpmcflags} -Wno-error"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
+install -d $RPM_BUILD_ROOT/var/lib/lldpad
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	bashcompletiondir=%{bash_compdir}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
@@ -78,10 +79,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
-%systemd_post %{name}.service %{name}.socket
+%systemd_post lldpad.service lldpad.socket
 
 %preun
-%systemd_preun %{name}.service %{name}.socket
+%systemd_preun lldpad.service lldpad.socket
 
 %postun
 /sbin/ldconfig
@@ -89,16 +90,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING README ChangeLog
-%{_sysconfdir}/bash_completion.d/*
+%doc ChangeLog README
 %attr(755,root,root) %{_sbindir}/dcbtool
 %attr(755,root,root) %{_sbindir}/lldpad
 %attr(755,root,root) %{_sbindir}/lldptool
+%attr(755,root,root) %{_sbindir}/vdptool
 %attr(755,root,root) %{_libdir}/liblldp_clif.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblldp_clif.so.1
-%{systemdunitdir}/%{name}.service
-%{systemdunitdir}/%{name}.socket
-%dir %{_sharedstatedir}/%{name}
+%{systemdunitdir}/lldpad.service
+%{systemdunitdir}/lldpad.socket
+%dir /var/lib/lldpad
+%{bash_compdir}/lldpad
+%{bash_compdir}/lldptool
 %{_mandir}/man8/dcbtool.8*
 %{_mandir}/man8/lldpad.8*
 %{_mandir}/man8/lldptool.8*
@@ -110,6 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/lldptool-med.8*
 %{_mandir}/man8/lldptool-pfc.8*
 %{_mandir}/man8/lldptool-vdp.8*
+%{_mandir}/man8/vdptool.8*
 
 %files devel
 %defattr(644,root,root,755)
@@ -117,3 +121,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/lldpad
 %{_pkgconfigdir}/liblldp_clif.pc
 %{_pkgconfigdir}/lldpad.pc
+%{_mandir}/man3/liblldp_clif-vdp22.3*
